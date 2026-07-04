@@ -10,14 +10,17 @@ export function useSocket() {
   const initDataRef = useRef(null);
   const initCallbacksRef = useRef([]);
 
-  useEffect(() => {
+  if (!socketRef.current) {
     const serverUrl = import.meta.env.PROD ? '' : 'http://localhost:3001';
-    const socket = io(serverUrl, {
+    socketRef.current = io(serverUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 10,
     });
-    socketRef.current = socket;
+  }
+
+  useEffect(() => {
+    const socket = socketRef.current;
 
     socket.on('connect', () => setIsConnected(true));
     socket.on('disconnect', () => setIsConnected(false));
