@@ -11,7 +11,7 @@ export function useSocket() {
   const initCallbacksRef = useRef([]);
 
   if (!socketRef.current) {
-    const serverUrl = import.meta.env.VITE_SERVER_URL || (import.meta.env.PROD ? '' : 'http://localhost:3001');
+    const serverUrl = import.meta.env.PROD ? 'https://toolboxkit-project.onrender.com' : 'http://localhost:3001';
     socketRef.current = io(serverUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
