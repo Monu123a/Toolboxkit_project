@@ -1,5 +1,31 @@
-export function UserPanel({ user, score, hoveredCell, cooldownRemaining }) {
+import { useState } from 'react';
+
+export function UserPanel({ user, score, hoveredCell, cooldownRemaining, emit }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+
   if (!user) return null;
+
+  const handleEditClick = () => {
+    setEditName(user.name);
+    setIsEditing(true);
+  };
+
+  const handleSaveName = () => {
+    const trimmed = editName.trim();
+    if (trimmed && trimmed !== user.name) {
+      emit('update-name', trimmed.substring(0, 20));
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSaveName();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
 
   return (
     <div className="panel">
@@ -10,7 +36,41 @@ export function UserPanel({ user, score, hoveredCell, cooldownRemaining }) {
           style={{ backgroundColor: user.color, width: 24, height: 24 }}
         />
         <div>
-          <div className="user-name">{user.name}</div>
+          {isEditing ? (
+            <div style={{ display: 'flex', gap: '4px', marginBottom: '2px' }}>
+              <input 
+                type="text" 
+                value={editName} 
+                onChange={(e) => setEditName(e.target.value)}
+                onBlur={handleSaveName}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                maxLength={20}
+                style={{ 
+                  background: 'var(--surface-hover)', 
+                  border: '1px solid var(--border-hover)', 
+                  color: 'var(--text-primary)', 
+                  padding: '2px 6px', 
+                  borderRadius: '4px', 
+                  fontSize: '0.95rem', 
+                  fontWeight: 600, 
+                  outline: 'none',
+                  width: '140px'
+                }}
+              />
+            </div>
+          ) : (
+            <div className="user-name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {user.name}
+              <button 
+                onClick={handleEditClick} 
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0 4px', fontSize: '0.85rem' }}
+                title="Edit name"
+              >
+                ✎
+              </button>
+            </div>
+          )}
           <div className="user-id">ID: {user.id.slice(0, 8)}</div>
         </div>
       </div>

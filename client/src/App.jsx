@@ -46,6 +46,7 @@ function App() {
             score={score}
             hoveredCell={hoveredCell}
             cooldownRemaining={cooldownRemaining}
+            emit={emit}
           />
           <Leaderboard
             on={on}

@@ -63,6 +63,30 @@ export function useGrid({ on, emit, onInit, user }) {
     return unsub;
   }, [on]);
 
+  // Listen for user updates
+  useEffect(() => {
+    const unsub = on('user-updated', (data) => {
+      setGrid(prev => {
+        if (!prev) return prev;
+        const newGrid = new Map(prev);
+        newGrid.forEach((cell, key) => {
+          if (cell.owner_id === data.id) {
+            newGrid.set(key, { ...cell, owner_name: data.name });
+          }
+        });
+        return newGrid;
+      });
+      
+      setHoveredCell(prev => {
+        if (prev && prev.owner_id === data.id) {
+          return { ...prev, owner_name: data.name };
+        }
+        return prev;
+      });
+    });
+    return unsub;
+  }, [on]);
+
   // Cooldown timer
   useEffect(() => {
     const interval = setInterval(() => {

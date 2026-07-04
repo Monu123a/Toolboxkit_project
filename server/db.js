@@ -122,6 +122,15 @@ function getUserScore(userId) {
   return user ? user.score : 0;
 }
 
+function updateUserName(userId, newName) {
+  const transaction = db.transaction(() => {
+    db.prepare('UPDATE users SET name = ? WHERE id = ?').run(newName, userId);
+    db.prepare('UPDATE cells SET owner_name = ? WHERE owner_id = ?').run(newName, userId);
+  });
+  transaction();
+  return getUser(userId);
+}
+
 module.exports = {
   initDB,
   getFullGrid,
@@ -131,6 +140,7 @@ module.exports = {
   getUser,
   getLeaderboard,
   getUserScore,
+  updateUserName,
   ROWS,
   COLS,
 };

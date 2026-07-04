@@ -37,6 +37,15 @@ export function useSocket() {
     socket.on('user-joined', (data) => setOnlineCount(data.onlineCount));
     socket.on('user-left', (data) => setOnlineCount(data.onlineCount));
 
+    socket.on('user-updated', (data) => {
+      setUser(prev => {
+        if (prev && prev.id === data.id) {
+          return { ...prev, name: data.name };
+        }
+        return prev;
+      });
+    });
+
     return () => { socket.disconnect(); };
   }, []);
 

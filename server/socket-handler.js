@@ -14,7 +14,7 @@ function setupSocketHandlers(io, db, game) {
       onlineCount++;
 
       // Generate identity and create user in DB
-      const identity = game.generateUserIdentity();
+      let identity = game.generateUserIdentity();
       const userId = nanoid();
       const user = db.createUser(userId, identity.name, identity.color);
 
@@ -109,6 +109,30 @@ function setupSocketHandlers(io, db, game) {
         } catch (err) {
           console.error('[Socket] Error fetching leaderboard:', err);
           socket.emit('leaderboard', []);
+        }
+      });
+
+      // Handle username update requests
+      socket.on('update-name', (newName) => {
+        try {
+          if (typeof newName !== 'string' || newName.trim().length === 0 || newName.length > 20) {
+            socket.emit('update-name-result', { success: false, reason: 'Invalid name' });
+            return;
+          }
+          const trimmedName = newName.trim();
+          db.updateUserName(userId, trimmedName);
+          identity.name = trimmedName;
+
+          // Broadcast to everyone that a user updated their name
+          io.emit('user-updated', { id: userId, name: trimmedName });
+          
+          socket.emit('update-name-result', { success: true, name: trimmedName });
+          
+          // Broadcast updated leaderboard
+          io.emit('leaderboard', db.getLeaderboard());
+        } catch (err) {
+          console.error('[Socket] Error updating name:', err);
+          socket.emit('update-name-result', { success: false, reason: 'Server error' });
         }
       });
 
