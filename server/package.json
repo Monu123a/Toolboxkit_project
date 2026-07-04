@@ -1,0 +1,17 @@
+{
+  "name": "gridwars-server",
+  "version": "1.0.0",
+  "description": "GridWars real-time shared grid backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "nanoid": "^3.3.7",
+    "socket.io": "^4.7.5"
+  }
+}
