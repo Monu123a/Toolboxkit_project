@@ -18,7 +18,7 @@ A real-time multiplayer grid game where users compete to capture territory. Buil
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Frontend** | React.js + Vite | Fast dev, HMR, modern tooling |
-| **Styling** | Vanilla CSS | Full control, glassmorphism dark theme |
+| **Styling** | Vanilla CSS | Full control, classic light theme |
 | **Backend** | Node.js + Express | Same language, lightweight |
 | **Real-time** | Socket.IO | WebSocket abstraction, auto-reconnect, fallbacks |
 | **Database** | SQLite (better-sqlite3) | Zero-config, persistent, no external deps |
@@ -71,6 +71,23 @@ npm run build
 # Start the server (serves client from /client/dist)
 npm start
 ```
+
+## 🌍 Deployment
+
+GridWars uses WebSockets, so the backend needs a host that supports long-running processes (like Render), while the frontend can be hosted anywhere (like Vercel).
+
+**Backend (Render)**
+1. Create a **New Web Service** on [Render](https://render.com).
+2. Root Directory: `server`
+3. Build Command: `npm install`
+4. Start Command: `npm start`
+5. *Optional*: Add a Persistent Disk mounted to `/opt/render/project/src/server` to prevent the SQLite database from resetting on restarts.
+
+**Frontend (Vercel)**
+1. The frontend code is already hardcoded to connect to the production Render URL.
+2. Import the project in Vercel.
+3. Set the Root Directory to `client`.
+4. Deploy! Vercel will automatically build the Vite app and serve it.
 
 ## 🏗 Architecture
 
@@ -133,7 +150,7 @@ npm start
 | Feature | Description |
 |---------|-------------|
 | 🎨 **User Colors** | Each user gets a unique vibrant color from a curated palette |
-| 🏷 **User Names** | Auto-generated fun names (e.g., "Neon Tiger", "Quantum Panda") |
+| 🏷 **User Names** | Auto-generated fun names (e.g., "Neon Tiger") with the **ability to edit them** |
 | ⏱ **Cooldown** | 500ms between claims with visual progress indicator |
 | 🏆 **Leaderboard** | Live top-10 with medal emojis (🥇🥈🥉) |
 | 🔍 **Zoom/Pan** | Mouse wheel zoom + drag to pan the canvas grid |
@@ -162,7 +179,7 @@ toolboxkit/
         ├── main.jsx      # React entry point
         ├── App.jsx       # Root component
         ├── styles/
-        │   └── index.css # Premium dark theme
+        │   └── index.css # Classic light theme
         ├── hooks/
         │   ├── useSocket.js # Socket.IO connection hook
         │   └── useGrid.js   # Grid state management
